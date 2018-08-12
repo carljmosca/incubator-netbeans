@@ -2121,5 +2121,56 @@ It is possible to use -Ddebug.port=3234 -Ddebug.pause=y to start the system in d
         
         <reportFromLicenseinfo nball=".." report="${nb.build.dir}/rat-appendix.txt" />
     </target>
+    
+    <target name="build-macos" depends="build-nozip">
+        <property name="pkg.app.dir" value="MacOS" />
+        <property name="pkg.contents.dir" value="${pkg.app.dir}/NetBeans 9.app/Contents" />
+        <property name="pkg.rsrc.dir" value="${pkg.contents.dir}/Resources" />
+        <property name="pkg.netbeans.dir" value="${pkg.rsrc.dir}/NetBeans" />
+        <property name="pkg.macos.dir" value="${pkg.contents.dir}/MacOS" />
 
+        <mkdir dir="${pkg.contents.dir}" />
+        <mkdir dir="${pkg.netbeans.dir}" />
+        <mkdir dir="${pkg.macos.dir}" />
+
+        <!-- put Info.plist into Contents -->
+        <copy todir="${pkg.contents.dir}">
+            <fileset dir="../macos">
+                <include name="Info.plist" />
+            </fileset>
+        </copy>
+
+        <!-- put icns into Contents/Resources -->
+        <copy todir="${pkg.rsrc.dir}">
+            <fileset dir="netbeans/nb">
+                <include name="netbeans.icns" />
+            </fileset>
+        </copy>
+
+        <!-- put app, jars, etc. into Contents/Resources/NetBeans -->
+        <copy todir="${pkg.netbeans.dir}">
+            <fileset dir="netbeans">
+                <include name="**/*" />
+            </fileset>
+        </copy>
+        <chmod perm="ugo+rx" file="${pkg.rsrc.dir}/NetBeans/bin/netbeans" />
+        <symlink link="nbbuild/${pkg.macos.dir}/netbeans" resource="../Resources/NetBeans/bin/netbeans"/>
+
+    </target>
+
+    <target name="package-macos" depends="build-macos">
+
+        <exec executable="/usr/bin/pkgbuild" os="Mac OS X">
+            <arg value="--install-location" />
+            <arg value="/Applications/NetBeans" />
+            <arg value="--component" />
+            <arg value="${basedir}/MacOS/NetBeans 9.app" />
+            <arg value="${basedir}/MacOS/NetBeans 9.pkg" />
+        </exec>
+
+        <delete includeEmptyDirs="true">
+            <fileset dir="${basedir}/MacOS/NetBeans 9.app" />
+        </delete>
+
+    </target>
 </project>
