@@ -1,0 +1,6 @@
+#!/bin/sh
+ 
+sudo chgrp -R staff "/Applications/NetBeans/NetBeans 9.app"
+sudo chmod -R g+w "/Applications/NetBeans/NetBeans 9.app"
+
+exit 0

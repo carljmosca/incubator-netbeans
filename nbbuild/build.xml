@@ -2121,10 +2121,10 @@ It is possible to use -Ddebug.port=3234 -Ddebug.pause=y to start the system in d
         
         <reportFromLicenseinfo nball=".." report="${nb.build.dir}/rat-appendix.txt" />
     </target>
-    
+
     <target name="build-macos" depends="build-nozip">
         <property name="pkg.app.dir" value="MacOS" />
-        <property name="pkg.contents.dir" value="${pkg.app.dir}/NetBeans 9.app/Contents" />
+        <property name="pkg.contents.dir" value="${pkg.app.dir}/work/Applications/NetBeans/NetBeans 9.app/Contents" />
         <property name="pkg.rsrc.dir" value="${pkg.contents.dir}/Resources" />
         <property name="pkg.netbeans.dir" value="${pkg.rsrc.dir}/NetBeans" />
         <property name="pkg.macos.dir" value="${pkg.contents.dir}/MacOS" />
@@ -2161,15 +2161,17 @@ It is possible to use -Ddebug.port=3234 -Ddebug.pause=y to start the system in d
     <target name="package-macos" depends="build-macos">
 
         <exec executable="/usr/bin/pkgbuild" os="Mac OS X">
-            <arg value="--install-location" />
-            <arg value="/Applications/NetBeans" />
-            <arg value="--component" />
-            <arg value="${basedir}/MacOS/NetBeans 9.app" />
+            <arg value="--root" />
+            <arg value="${basedir}/MacOS/work" />
+            <arg value="--identifier" />
+            <arg value="NetBeans 9" />
+            <arg value="--scripts" />
+            <arg value="../macos/scripts" />
             <arg value="${basedir}/MacOS/NetBeans 9.pkg" />
         </exec>
 
         <delete includeEmptyDirs="true">
-            <fileset dir="${basedir}/MacOS/NetBeans 9.app" />
+            <fileset dir="${basedir}/MacOS/work" />
         </delete>
 
     </target>
